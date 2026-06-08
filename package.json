@@ -1,0 +1,21 @@
+{
+	"name": "code-chunk-monorepo",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"build": "bun run --filter '@unisonlabs/code-chunk' build",
+		"dev": "bun run --filter '@unisonlabs/code-chunk' dev",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"test": "bun run --filter '@unisonlabs/code-chunk' test",
+		"test:coverage": "bun run --filter '@unisonlabs/code-chunk' test:coverage",
+		"type-check": "bun run --filter '*' type-check"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.8",
+		"typescript": "^5.9.3"
+	}
+}
