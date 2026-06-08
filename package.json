@@ -12,6 +12,7 @@
 		"format": "biome format --write .",
 		"test": "bun run --filter '@unisonlabs/code-chunk' test",
 		"test:coverage": "bun run --filter '@unisonlabs/code-chunk' test:coverage",
+		"test:watch": "bun run --filter '@unisonlabs/code-chunk' test:watch",
 		"type-check": "bun run --filter '*' type-check"
 	},
 	"devDependencies": {
