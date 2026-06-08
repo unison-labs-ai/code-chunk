@@ -38,7 +38,8 @@
 						"noNonNullAssertion": "off"
 					},
 					"suspicious": {
-						"noNonNullAssertedOptionalChain": "off"
+						"noNonNullAssertedOptionalChain": "off",
+						"noTemplateCurlyInString": "off"
 					},
 					"correctness": {
 						"noUnsafeOptionalChaining": "off"

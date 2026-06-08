@@ -4,6 +4,8 @@ AST-aware code chunking for contextual retrieval into the [Unison brain](https:/
 
 Uses tree-sitter to split source code at semantic boundaries (functions, classes, methods) rather than arbitrary character limits. Each chunk includes rich context: scope chain, imports, siblings, and entity signatures — optimized for embedding and retrieval. Chunks can be pushed directly into your Unison brain workspace for semantic code search.
 
+**Agents: see [AGENTS.md](AGENTS.md)** — install, authenticate with a `usk_...` key, chunk, and ingest in four steps.
+
 This is a 1:1 functional mirror of [supermemoryai/code-chunk](https://github.com/supermemoryai/code-chunk), wired to the Unison brain instead of Supermemory.
 
 ## Table of Contents

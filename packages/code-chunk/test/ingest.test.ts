@@ -227,9 +227,8 @@ export function mergeConfigs(
 
 		const result = await ingestFile('test/fixtures/config.ts', code, {
 			repo: 'code-chunk-test',
-			pathPrefix: '/private/code/',
 			tags: ['test', 'code-chunk'],
-			visibility: 'private',
+			visibility: 'tenant',
 			maxChunkSize: 800,
 		})
 
@@ -237,16 +236,18 @@ export function mergeConfigs(
 		expect(result.chunks).toBeGreaterThan(0)
 		expect(result.paths.length).toBe(result.chunks)
 
-		// All paths should be under /private/code/
+		// All paths should be under /tenant/code/
 		for (const path of result.paths) {
-			expect(path.startsWith('/private/code/')).toBe(true)
+			expect(path.startsWith('/tenant/code/')).toBe(true)
 			expect(path.endsWith('.md')).toBe(true)
 		}
 
-		// Clean up: delete the docs we wrote
+		// Best-effort cleanup — some brain deployments may not support delete
 		const client = new BrainClient()
 		for (const path of result.paths) {
-			await client.deleteDoc(path)
+			await client.deleteDoc(path).catch(() => {
+				// Ignore cleanup errors (e.g. delete not permitted on this deployment)
+			})
 		}
 	})
 })

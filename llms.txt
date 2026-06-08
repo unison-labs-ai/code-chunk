@@ -1,0 +1,25 @@
+# @unisonlabs/code-chunk
+
+> AST-aware code chunking for semantic retrieval into the Unison brain. Splits
+> source code at function/class/method boundaries using tree-sitter, enriches
+> each chunk with scope, imports, and sibling context, then pushes them as
+> searchable documents into your Unison brain workspace.
+
+**Agents: start with [AGENTS.md](AGENTS.md)** — it self-onboards you onto this
+library (install → auth → chunk → ingest → verify), then the chunk-and-search loop.
+
+## Docs
+- [README.md](README.md): install, quickstart, all options, API reference
+- [AGENTS.md](AGENTS.md): how an agent installs, authenticates, and uses this client
+- [CONTRIBUTING.md](CONTRIBUTING.md): build, test, lint, PR workflow
+- [SECURITY.md](SECURITY.md): how to report vulnerabilities
+
+## Usage
+- Chunk a file: `import { chunk } from '@unisonlabs/code-chunk'`
+- Ingest into brain: `import { ingestFile } from '@unisonlabs/code-chunk'`
+- Batch ingest: `import { ingestBatch } from '@unisonlabs/code-chunk'`
+- Direct client: `import { BrainClient } from '@unisonlabs/code-chunk'`
+
+## Examples
+- [README.md#quickstart](README.md#quickstart): copy-pasteable examples for chunking, ingest, batch, streaming
+- [README.md#api-reference](README.md#api-reference): full option tables and return types
