@@ -32,8 +32,8 @@ describe('slugify', () => {
 		expect(slugify('Hello World')).toBe('hello-world')
 	})
 
-	test('preserves dots and slashes', () => {
-		expect(slugify('src/utils.ts')).toBe('src/utils.ts')
+	test('replaces dots and slashes with dashes', () => {
+		expect(slugify('src/utils.ts')).toBe('src-utils-ts')
 	})
 
 	test('collapses consecutive dashes', () => {
@@ -60,19 +60,19 @@ describe('isWritableRoot', () => {
 })
 
 describe('chunkBrainPath', () => {
-	test('generates path under /tenant/code/ by default', () => {
+	test('generates flat path under /private/notes/ by default', () => {
 		const p = chunkBrainPath('src/user.ts', 0)
-		expect(p).toBe('/tenant/code/src/user.ts/chunk-0.md')
+		expect(p).toBe('/private/notes/code-src-user-ts-chunk-0.md')
 	})
 
-	test('includes repo namespace when provided', () => {
+	test('includes repo as slug prefix when provided', () => {
 		const p = chunkBrainPath('src/auth.ts', 2, 'my-project')
-		expect(p).toBe('/tenant/code/my-project/src/auth.ts/chunk-2.md')
+		expect(p).toBe('/private/notes/code-my-project-src-auth-ts-chunk-2.md')
 	})
 
-	test('respects custom prefix', () => {
-		const p = chunkBrainPath('lib/utils.py', 1, undefined, '/private/code/')
-		expect(p).toBe('/private/code/lib/utils.py/chunk-1.md')
+	test('respects custom prefix (must be a valid writable root)', () => {
+		const p = chunkBrainPath('lib/utils.py', 1, undefined, '/private/notes/')
+		expect(p).toBe('/private/notes/code-lib-utils-py-chunk-1.md')
 	})
 
 	test('throws on non-writable prefix', () => {
@@ -82,6 +82,12 @@ describe('chunkBrainPath', () => {
 	test('path ends with .md', () => {
 		const p = chunkBrainPath('main.go', 0)
 		expect(p.endsWith('.md')).toBe(true)
+	})
+
+	test('slug contains no path separators', () => {
+		const p = chunkBrainPath('deeply/nested/src/file.ts', 0)
+		const slug = p.replace('/private/notes/', '').replace('.md', '')
+		expect(slug).not.toContain('/')
 	})
 })
 
@@ -236,10 +242,12 @@ export function mergeConfigs(
 		expect(result.chunks).toBeGreaterThan(0)
 		expect(result.paths.length).toBe(result.chunks)
 
-		// All paths should be under /tenant/code/
+		// All paths should be flat slugs under /private/notes/
 		for (const path of result.paths) {
-			expect(path.startsWith('/tenant/code/')).toBe(true)
+			expect(path.startsWith('/private/notes/')).toBe(true)
 			expect(path.endsWith('.md')).toBe(true)
+			// No subfolders — exactly 3 segments: ['private','notes','<slug>.md']
+			expect(path.split('/').filter(Boolean).length).toBe(3)
 		}
 
 		// Best-effort cleanup — some brain deployments may not support delete

@@ -2,22 +2,28 @@
  * Brain FS path helpers for code-chunk ingest paths.
  *
  * By default, ingested chunks are written to:
- *   /tenant/code/<repo>/<filepath>/<chunkIndex>.md
+ *   /private/notes/code-<repo?>-<file-path-slug>-chunk-<n>.md
  *
- * Custom root prefixes must be under /private/, /tenant/, or /teams/<slug>/.
+ * This flat layout satisfies the FS contract's one-slug-segment rule for
+ * /private/notes/<slug>.md. Path separators in the file path are collapsed
+ * to dashes so the result is a single flat slug with no subfolders.
+ *
+ * Custom root prefixes must be under /private/notes/, /tenant/<kind>/,
+ * or /teams/<slug>/<kind>/. Nested subfolders beyond the kind segment are
+ * not accepted by the brain; use the flat slug approach below.
  */
 
 const WRITABLE_ROOTS = ['/private/', '/tenant/', '/teams/']
 
 /**
  * Slugify a string for use in a brain path segment.
- * Lowercases, replaces non-alphanumeric (except . and -) with -.
- * Collapses consecutive dashes and trims them from ends.
+ * Lowercases, replaces non-alphanumeric chars (including path separators)
+ * with -, collapses consecutive dashes, and trims them from ends.
  */
 export function slugify(s: string): string {
 	return s
 		.toLowerCase()
-		.replace(/[^a-z0-9.\-/]/g, '-')
+		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/-{2,}/g, '-')
 		.replace(/^-|-$/g, '')
 }
@@ -32,10 +38,20 @@ export function isWritableRoot(path: string): boolean {
 /**
  * Build the brain document path for a code chunk.
  *
+ * The default output is a flat /private/notes/<slug>.md path where the slug
+ * encodes the repo (optional), file path, and chunk index as dash-separated
+ * segments — no subfolders. This satisfies the brain's FS contract which
+ * requires exactly one slug segment after the kind directory.
+ *
+ * Example (no repo):  /private/notes/code-src-user-ts-chunk-0.md
+ * Example (with repo): /private/notes/code-my-project-src-auth-ts-chunk-2.md
+ *
  * @param filepath - The original source file path (e.g. src/services/user.ts)
  * @param chunkIndex - The chunk index (0-based)
- * @param repo - Optional repo/project name (used as a namespace segment)
- * @param prefix - Optional writable root prefix (default: /tenant/code/)
+ * @param repo - Optional repo/project name used as a prefix in the slug
+ * @param prefix - Optional override; must be a valid writable brain root such
+ *   as '/private/notes/' (default) or '/tenant/notes/'. Nested subfolders are
+ *   not supported by the brain FS contract.
  */
 export function chunkBrainPath(
 	filepath: string,
@@ -43,7 +59,7 @@ export function chunkBrainPath(
 	repo?: string,
 	prefix?: string,
 ): string {
-	const root = prefix ?? '/tenant/code/'
+	const root = prefix ?? '/private/notes/'
 
 	if (!isWritableRoot(root)) {
 		throw new Error(
@@ -54,9 +70,12 @@ export function chunkBrainPath(
 	// Normalise the root to end with /
 	const normRoot = root.endsWith('/') ? root : `${root}/`
 
-	// Slugify path segments
-	const sluggedFile = slugify(filepath.replace(/^\//, ''))
-	const repoSegment = repo ? `${slugify(repo)}/` : ''
+	// Build a flat slug: code-[repo-]<file-path-slug>-chunk-<n>
+	// Path separators and dots in filepath are collapsed to dashes by slugify.
+	const fileSlug = slugify(filepath.replace(/^\//, ''))
+	const repoPart = repo ? `${slugify(repo)}-` : ''
 
-	return `${normRoot}${repoSegment}${sluggedFile}/chunk-${chunkIndex}.md`
+	const slug = `code-${repoPart}${fileSlug}-chunk-${chunkIndex}`
+
+	return `${normRoot}${slug}.md`
 }

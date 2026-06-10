@@ -60,14 +60,16 @@ export { ChunkingError, UnsupportedLanguageError }
  */
 export interface IngestOptions extends ChunkOptions {
 	/**
-	 * Repository / project name used as a namespace prefix in brain paths.
-	 * E.g. "my-repo" → /tenant/code/my-repo/src/user.ts/chunk-0.md
+	 * Repository / project name used as a prefix in the flat brain path slug.
+	 * E.g. "my-repo" → /private/notes/code-my-repo-src-user-ts-chunk-0.md
 	 */
 	repo?: string
 
 	/**
-	 * Writable brain root prefix (default: /tenant/code/).
-	 * Must be under /private/, /tenant/, or /teams/<slug>/.
+	 * Writable brain root prefix (default: /private/notes/).
+	 * Must be under /private/, /tenant/, or /teams/<slug>/. Note that the
+	 * brain FS contract requires exactly one slug segment after the kind
+	 * directory; chunkBrainPath produces a flat slug with no subfolders.
 	 */
 	pathPrefix?: string
 
@@ -198,7 +200,7 @@ export async function pushChunks(
  *
  * This is the primary ingest entry point. It:
  * 1. Chunks the source code using AST-aware splitting
- * 2. Writes each chunk as a brain document at /tenant/code/<repo?>/<filepath>/chunk-N.md
+ * 2. Writes each chunk as a brain document at /private/notes/code-<repo?>-<filepath-slug>-chunk-N.md
  *
  * @param filepath - File path (used for language detection and brain path generation)
  * @param code     - Source code string
