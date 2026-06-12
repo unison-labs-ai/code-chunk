@@ -34,7 +34,7 @@ The `test/ingest.test.ts` tests that touch the real brain are gated behind
 
 ```bash
 export UNISON_TOKEN=usk_live_...
-export UNISON_API_URL=https://api.unisonlabs.ai   # or a local brain
+export UNISON_API_URL=https://brain.unisonlabs.ai   # or a local brain
 bun test packages/code-chunk/test/ingest.test.ts
 ```
 

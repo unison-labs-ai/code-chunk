@@ -8,7 +8,7 @@
  */
 
 export interface BrainClientOptions {
-	/** Override the API base URL (defaults to UNISON_API_URL env var, then https://api.unisonlabs.ai) */
+	/** Override the API base URL (defaults to UNISON_API_URL env var, then https://brain.unisonlabs.ai) */
 	baseUrl?: string
 	/** API token (defaults to UNISON_TOKEN env var) */
 	token?: string
@@ -87,7 +87,7 @@ export class BrainClient {
 			(typeof process !== 'undefined'
 				? process.env['UNISON_API_URL']
 				: undefined) ??
-			'https://api.unisonlabs.ai'
+			'https://brain.unisonlabs.ai'
 
 		// Strip trailing slash
 		this.baseUrl = rawBase.replace(/\/$/, '')

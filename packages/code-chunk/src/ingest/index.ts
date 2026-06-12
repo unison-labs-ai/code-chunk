@@ -6,7 +6,7 @@
  *
  * Environment variables:
  *   UNISON_TOKEN      — usk_live_... API key (required)
- *   UNISON_API_URL    — override API base URL (default: https://api.unisonlabs.ai)
+ *   UNISON_API_URL    — override API base URL (default: https://brain.unisonlabs.ai)
  *
  * @example
  * ```ts

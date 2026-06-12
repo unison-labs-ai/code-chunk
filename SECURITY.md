@@ -30,7 +30,7 @@ Server-side or account issues should also go to the same email address.
 
 The library reads `UNISON_TOKEN` from the environment and sends it as
 `Authorization: Bearer <token>` only to the configured API host (`UNISON_API_URL`,
-defaulting to `https://api.unisonlabs.ai`). The token is never logged, written to
+defaulting to `https://brain.unisonlabs.ai`). The token is never logged, written to
 disk by this library, or transmitted anywhere else.
 
 Never commit a real `usk_live_...` token to this repository. Use `.env` (which is
