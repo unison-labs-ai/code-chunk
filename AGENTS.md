@@ -32,7 +32,7 @@ Set your Unison brain API key. If you don't have one:
 
 ```bash
 # Provision a key (headless — no browser required)
-curl -s -X POST https://api.unisonlabs.ai/v1/auth/provision \
+curl -s -X POST https://brain.unisonlabs.ai/v1/auth/provision \
   -H 'Content-Type: application/json' \
   -d '{"email":"you@example.com"}'
 # → { "apiKey": "usk_live_...", "tenantId": "...", "status": "unverified" }
@@ -42,7 +42,7 @@ export UNISON_TOKEN=usk_live_...
 # export UNISON_API_URL=http://localhost:4001
 ```
 
-All API calls go to `UNISON_API_URL` (default: `https://api.unisonlabs.ai`) with
+All API calls go to `UNISON_API_URL` (default: `https://brain.unisonlabs.ai`) with
 `Authorization: Bearer $UNISON_TOKEN`. The key is a `usk_live_...` bearer token.
 
 ### 3. Chunk and ingest

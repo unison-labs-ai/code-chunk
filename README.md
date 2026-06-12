@@ -85,18 +85,18 @@ npm install @unisonlabs/code-chunk
 | Variable | Required | Description |
 |---|---|---|
 | `UNISON_TOKEN` | Yes (for ingest) | Your Unison API key (`usk_live_...`) |
-| `UNISON_API_URL` | No | Override the Unison API base URL (default: `https://api.unisonlabs.ai`) |
+| `UNISON_API_URL` | No | Override the Unison API base URL (default: `https://brain.unisonlabs.ai`) |
 
 Obtain a token:
 ```bash
 # 1. Provision an account (headless)
-curl -X POST https://api.unisonlabs.ai/v1/auth/provision \
+curl -X POST https://brain.unisonlabs.ai/v1/auth/provision \
   -H 'Content-Type: application/json' \
   -d '{"email": "you@example.com"}'
 # → { "apiKey": "usk_live_...", "tenantId": "...", "status": "unverified" }
 
 # 2. Verify with the OTP emailed to you
-curl -X POST https://api.unisonlabs.ai/v1/auth/verify \
+curl -X POST https://brain.unisonlabs.ai/v1/auth/verify \
   -H 'Content-Type: application/json' \
   -d '{"email": "you@example.com", "code": "123456"}'
 
