@@ -57,7 +57,7 @@ const result = await ingestFile('src/user.ts', sourceCode, {
   visibility: 'tenant',       // 'tenant' (org-wide) or 'private'
 })
 console.log(`Pushed ${result.chunks} chunks`)
-// result.paths → ['/tenant/code/my-project/src/user.ts/chunk-0.md', ...]
+// result.paths → ['/private/notes/code-my-project-src-user-ts-chunk-0.md', ...]
 
 // Batch — multiple files, controlled concurrency
 const results = await ingestBatch(

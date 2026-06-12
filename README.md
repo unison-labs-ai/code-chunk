@@ -68,7 +68,7 @@ Each chunk is enriched with contextual metadata:
 
 Each chunk is written to the Unison brain as a document at:
 ```
-/tenant/code/<repo?>/<filepath>/chunk-N.md
+/private/notes/code-<repo?>-<filepath-slug>-chunk-N.md
 ```
 The document body includes inline metadata comments, the contextualized text (for semantic search), and the raw code in a fenced block (for grep/exact search).
 
@@ -131,7 +131,7 @@ const result = await ingestFile('src/user.ts', sourceCode, {
 })
 
 console.log(`Pushed ${result.chunks} chunks`)
-// result.paths → ['/tenant/code/my-project/src/user.ts/chunk-0.md', ...]
+// result.paths → ['/private/notes/code-my-project-src-user-ts-chunk-0.md', ...]
 ```
 
 ### Batch Ingest
@@ -296,7 +296,7 @@ Push pre-computed chunks to the brain (skip chunking step).
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `repo` | `string` | — | Repository/project namespace |
-| `pathPrefix` | `string` | `/tenant/code/` | Writable brain root prefix |
+| `pathPrefix` | `string` | `/private/notes/` | Writable brain root prefix |
 | `tags` | `string[]` | `[]` | Tags for chunk documents |
 | `visibility` | `'tenant' \| 'private'` | `'tenant'` | Brain doc visibility |
 | `client` | `BrainClientOptions` | — | API token/URL override |
