@@ -71,7 +71,7 @@ const results = await ingestBatch(
 
 Chunks are stored as brain documents at:
 ```
-/tenant/code/<repo>/<filepath>/chunk-N.md
+/private/notes/code-<repo>-<filepath-slug>-chunk-N.md
 ```
 
 Each document body contains inline metadata, the contextualized embedding text,
@@ -93,7 +93,7 @@ console.log(me.tenant.name, me.scopes) // → "my-org" ["brain:read","brain:writ
   already embedded; use the Unison brain search API or MCP to find relevant ones.
 - **When a codebase changes, re-ingest the changed files.** `ingestFile` is
   idempotent — it upserts by path.
-- **All paths are deterministic.** `/tenant/code/<repo>/<filepath>/chunk-N.md`
+- **All paths are deterministic.** `/private/notes/code-<repo>-<filepath-slug>-chunk-N.md`
   so you can read back a specific chunk directly.
 
 ### Options reference
