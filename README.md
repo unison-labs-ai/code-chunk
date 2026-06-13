@@ -93,7 +93,7 @@ Obtain a token:
 curl -X POST https://brain.unisonlabs.ai/v1/auth/provision \
   -H 'Content-Type: application/json' \
   -d '{"email": "you@example.com"}'
-# → { "apiKey": "usk_live_...", "tenantId": "...", "status": "unverified" }
+# → { "apiKey": "usk_live_...", "workspaceId": "...", "status": "unverified" }
 
 # 2. Verify with the OTP emailed to you
 curl -X POST https://brain.unisonlabs.ai/v1/auth/verify \
@@ -127,7 +127,7 @@ import { ingestFile } from '@unisonlabs/code-chunk'
 const result = await ingestFile('src/user.ts', sourceCode, {
   repo: 'my-project',
   tags: ['typescript', 'services'],
-  visibility: 'tenant',
+  visibility: 'workspace',
 })
 
 console.log(`Pushed ${result.chunks} chunks`)
@@ -197,7 +197,7 @@ import { BrainClient } from '@unisonlabs/code-chunk'
 const client = new BrainClient() // reads UNISON_TOKEN from env
 
 const me = await client.whoami()
-console.log(me.tenant.name, me.scopes)
+console.log(me.workspace.name, me.scopes)
 
 await client.writeDoc({
   path: '/private/notes/research.md',
@@ -298,7 +298,7 @@ Push pre-computed chunks to the brain (skip chunking step).
 | `repo` | `string` | — | Repository/project namespace |
 | `pathPrefix` | `string` | `/private/notes/` | Writable brain root prefix |
 | `tags` | `string[]` | `[]` | Tags for chunk documents |
-| `visibility` | `'tenant' \| 'private'` | `'tenant'` | Brain doc visibility |
+| `visibility` | `'workspace' \| 'private'` | `'workspace'` | Brain doc visibility |
 | `client` | `BrainClientOptions` | — | API token/URL override |
 
 ---
