@@ -1,34 +1,37 @@
-# @unisonlabs/code-chunk
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/unison-labs-ai/unison-brain/main/assets/brain.svg" width="140" alt="Unison Brain" />
+
+# code-chunk
+
+**Feed your whole codebase to your agent's brain — chunked the way code actually reads.**
 
 AST-aware code chunking for contextual retrieval into the [Unison brain](https://unisonlabs.ai).
+Splits at semantic boundaries — functions, classes, methods — never mid-expression.
 
-Uses tree-sitter to split source code at semantic boundaries (functions, classes, methods) rather than arbitrary character limits. Each chunk includes rich context: scope chain, imports, siblings, and entity signatures — optimized for embedding and retrieval. Chunks can be pushed directly into your Unison brain workspace for semantic code search.
+[![CI](https://github.com/unison-labs-ai/code-chunk/actions/workflows/ci.yml/badge.svg)](https://github.com/unison-labs-ai/code-chunk/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@unisonlabs/code-chunk?logo=npm&color=cb3837)](https://www.npmjs.com/package/@unisonlabs/code-chunk)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/unison-labs-ai/code-chunk?style=social)](https://github.com/unison-labs-ai/code-chunk)
 
-**Agents: see [AGENTS.md](AGENTS.md)** — install, authenticate with a `usk_...` key, chunk, and ingest in four steps.
+[**Why AST-aware?**](#why-ast-aware-vs-naive-chunking) • [**Install**](#installation) • [**Quickstart**](#quickstart) • [**API**](#api-reference) • [**Languages**](#supported-languages)
 
-This is a 1:1 functional mirror of [supermemoryai/code-chunk](https://github.com/supermemoryai/code-chunk), wired to the Unison brain instead of Supermemory.
+</div>
 
-## Table of Contents
+---
 
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Quickstart](#quickstart)
-- [Ingesting into the Unison Brain](#ingesting-into-the-unison-brain)
-- [API Reference](#api-reference)
-- [License](#license)
+### Why AST-aware vs naive chunking
 
-## Features
+Naive character-limit chunkers split wherever the byte count runs out — mid-function, mid-class, sometimes mid-expression. The embedding model sees an amputated fragment with no context about what it belongs to. Retrieval degrades.
 
-- **AST-aware**: Splits at semantic boundaries, never mid-function
-- **Rich context**: Scope chain, imports, siblings, entity signatures
-- **Contextualized text**: Pre-formatted for embedding models
-- **Multi-language**: TypeScript, JavaScript, Python, Rust, Go, Java
-- **Batch processing**: Process entire codebases with controlled concurrency
-- **Streaming**: Process large files incrementally
-- **Unison brain ingest**: Push chunks directly into your brain workspace
-- **Effect support**: First-class Effect integration
+`code-chunk` parses with [tree-sitter](https://tree-sitter.github.io/tree-sitter/) first. Every chunk boundary is a real semantic boundary. Every chunk carries:
+
+- **Scope chain** — `UserService > getUser` tells the model exactly where the code lives
+- **Entity signatures** — what's defined, not just what's present
+- **Siblings** — what came before and after, for continuity
+- **Imports** — what dependencies are in play
+
+The result: embeddings that retrieve the *right* function, not a random slice of it.
 
 ## How It Works
 
@@ -75,9 +78,9 @@ The document body includes inline metadata comments, the contextualized text (fo
 ## Installation
 
 ```bash
-bun add @unisonlabs/code-chunk
-# or
 npm install @unisonlabs/code-chunk
+# or
+bun add @unisonlabs/code-chunk
 ```
 
 ## Environment Variables
@@ -323,6 +326,36 @@ Push pre-computed chunks to the brain (skip chunking step).
 **`BrainApiError`** — Unison brain API error (has `.statusCode` and `.code`)
 
 All errors have a `_tag` property for Effect-style error handling.
+
+## Star History
+
+If this library saves you from a bad retrieval pipeline, a ⭐ helps others find it.
+
+<a href="https://star-history.com/#unison-labs-ai/code-chunk&Date">
+  <img src="https://api.star-history.com/svg?repos=unison-labs-ai/code-chunk&type=Date" width="600" alt="Star History Chart" />
+</a>
+
+---
+
+## Part of the Unison Labs constellation
+
+**One brain, every agent.** Every repo below reads from _and writes to_ the same [Unison brain](https://unisonlabs.ai) — no per-tool memory silos.
+
+| Repo | What it does |
+|---|---|
+| [unison-brain](https://github.com/unison-labs-ai/unison-brain) | CLI · SDK · MCP server — the core |
+| [claude-unison](https://github.com/unison-labs-ai/claude-unison) | Memory for Claude Code |
+| [cursor-unison](https://github.com/unison-labs-ai/cursor-unison) | Memory for Cursor |
+| [codex-unison](https://github.com/unison-labs-ai/codex-unison) | Memory for OpenAI Codex CLI |
+| [opencode-unison](https://github.com/unison-labs-ai/opencode-unison) | Memory for OpenCode |
+| [openclaw-unison](https://github.com/unison-labs-ai/openclaw-unison) | Memory for OpenClaw |
+| [pipecat-unison](https://github.com/unison-labs-ai/pipecat-unison) | Memory for Pipecat voice agents |
+| [python-sdk](https://github.com/unison-labs-ai/python-sdk) | Python SDK for the brain |
+| [install-mcp](https://github.com/unison-labs-ai/install-mcp) | One-command MCP installer |
+| **[code-chunk](https://github.com/unison-labs-ai/code-chunk)** | **AST-aware code chunking ← you are here** |
+| [unison-fs](https://github.com/unison-labs-ai/unison-fs) | Mount the brain as a filesystem |
+| [backchannel](https://github.com/unison-labs-ai/backchannel) | Async messaging between agents |
+| [Unison-evals](https://github.com/unison-labs-ai/Unison-evals) | Open memory benchmark suite |
 
 ## License
 
