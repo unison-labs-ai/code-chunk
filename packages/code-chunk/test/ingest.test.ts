@@ -45,8 +45,8 @@ describe('isWritableRoot', () => {
 	test('accepts /private/', () => {
 		expect(isWritableRoot('/private/notes/foo.md')).toBe(true)
 	})
-	test('accepts /tenant/', () => {
-		expect(isWritableRoot('/tenant/code/foo.md')).toBe(true)
+	test('accepts /workspace/', () => {
+		expect(isWritableRoot('/workspace/code/foo.md')).toBe(true)
 	})
 	test('accepts /teams/eng/', () => {
 		expect(isWritableRoot('/teams/eng/docs/foo.md')).toBe(true)
@@ -189,7 +189,7 @@ describe('BrainClient', () => {
 		const result = await client.whoami()
 
 		expect(result).toHaveProperty('user')
-		expect(result).toHaveProperty('tenant')
+		expect(result).toHaveProperty('workspace')
 		expect(result).toHaveProperty('scopes')
 		expect(result.scopes).toContain('brain:read')
 	})
@@ -234,7 +234,7 @@ export function mergeConfigs(
 		const result = await ingestFile('test/fixtures/config.ts', code, {
 			repo: 'code-chunk-test',
 			tags: ['test', 'code-chunk'],
-			visibility: 'tenant',
+			visibility: 'workspace',
 			maxChunkSize: 800,
 		})
 

@@ -67,7 +67,7 @@ export interface IngestOptions extends ChunkOptions {
 
 	/**
 	 * Writable brain root prefix (default: /private/notes/).
-	 * Must be under /private/, /tenant/, or /teams/<slug>/. Note that the
+	 * Must be under /private/, /workspace/, or /teams/<slug>/. Note that the
 	 * brain FS contract requires exactly one slug segment after the kind
 	 * directory; chunkBrainPath produces a flat slug with no subfolders.
 	 */
@@ -79,10 +79,10 @@ export interface IngestOptions extends ChunkOptions {
 	tags?: string[]
 
 	/**
-	 * Brain visibility: 'tenant' (visible to whole org) or 'private'.
-	 * Default: 'tenant'
+	 * Brain visibility: 'workspace' (visible to whole org) or 'private'.
+	 * Default: 'workspace'
 	 */
-	visibility?: 'tenant' | 'private'
+	visibility?: 'workspace' | 'private'
 
 	/**
 	 * Brain client options (token, baseUrl, etc.).
@@ -157,7 +157,7 @@ export async function pushChunks(
 ): Promise<IngestFileResult> {
 	const client = new BrainClient(opts.client)
 	const tags = opts.tags ?? []
-	const visibility = opts.visibility ?? 'tenant'
+	const visibility = opts.visibility ?? 'workspace'
 	const totalChunks = chunks.length
 	const paths: string[] = []
 

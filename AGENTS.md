@@ -35,7 +35,7 @@ Set your Unison brain API key. If you don't have one:
 curl -s -X POST https://brain.unisonlabs.ai/v1/auth/provision \
   -H 'Content-Type: application/json' \
   -d '{"email":"you@example.com"}'
-# → { "apiKey": "usk_live_...", "tenantId": "...", "status": "unverified" }
+# → { "apiKey": "usk_live_...", "workspaceId": "...", "status": "unverified" }
 
 export UNISON_TOKEN=usk_live_...
 # Optionally, for a self-hosted brain:
@@ -54,7 +54,7 @@ import { ingestFile, ingestBatch } from '@unisonlabs/code-chunk'
 const result = await ingestFile('src/user.ts', sourceCode, {
   repo: 'my-project',         // optional namespace prefix
   tags: ['typescript'],       // optional tags on each chunk doc
-  visibility: 'tenant',       // 'tenant' (org-wide) or 'private'
+  visibility: 'workspace',    // 'workspace' (org-wide) or 'private'
 })
 console.log(`Pushed ${result.chunks} chunks`)
 // result.paths → ['/private/notes/code-my-project-src-user-ts-chunk-0.md', ...]
@@ -84,7 +84,7 @@ import { BrainClient } from '@unisonlabs/code-chunk'
 
 const client = new BrainClient()
 const me = await client.whoami()
-console.log(me.tenant.name, me.scopes) // → "my-org" ["brain:read","brain:write"]
+console.log(me.workspace.name, me.scopes) // → "my-org" ["brain:read","brain:write"]
 ```
 
 ### The loop — run this every session
@@ -104,7 +104,7 @@ console.log(me.tenant.name, me.scopes) // → "my-org" ["brain:read","brain:writ
 | `maxChunkSize` | `number` | `1500` | Max chunk size in bytes |
 | `contextMode` | `'none'\|'minimal'\|'full'` | `'full'` | Context detail level |
 | `tags` | `string[]` | `[]` | Tags for each chunk document |
-| `visibility` | `'tenant'\|'private'` | `'tenant'` | Brain doc visibility |
+| `visibility` | `'workspace'\|'private'` | `'workspace'` | Brain doc visibility |
 
 ### Errors
 

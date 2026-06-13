@@ -17,7 +17,7 @@ investigate. We'll credit reporters who want it once a fix ships.
 
 This repository is a **client library** (TypeScript SDK for code chunking and brain
 ingest). It holds no secrets and is not a security boundary — all authentication,
-authorization, tenant isolation, and rate limiting are enforced **server-side** by
+authorization, workspace isolation, and rate limiting are enforced **server-side** by
 the Unison brain API. Reports about this library are most useful when they concern:
 
 - credential handling (how `UNISON_TOKEN` is read and transmitted),

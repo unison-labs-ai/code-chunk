@@ -23,7 +23,7 @@ export interface BrainDocument {
 	tldr?: string
 	tags?: string[]
 	kind?: string
-	visibility?: 'tenant' | 'private'
+	visibility?: 'workspace' | 'private'
 }
 
 export interface WriteDocInput {
@@ -33,14 +33,14 @@ export interface WriteDocInput {
 	title?: string
 	tldr?: string
 	tags?: string[]
-	visibility?: 'tenant' | 'private'
+	visibility?: 'workspace' | 'private'
 	expectedContentHash?: string
 	source?: { kind: string; ref: string }
 }
 
 export interface WhoAmIResponse {
 	user: { id: string; email: string }
-	tenant: { id: string; name: string; verified: boolean }
+	workspace: { id: string; name: string; verified: boolean }
 	scopes: string[]
 }
 
