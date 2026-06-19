@@ -96,6 +96,24 @@ console.log(me.workspace.name, me.scopes) // → "my-org" ["brain:read","brain:w
 - **All paths are deterministic.** `/private/notes/code-<repo>-<filepath-slug>-chunk-N.md`
   so you can read back a specific chunk directly.
 
+### Rate limits
+
+The brain rate-limits **per API key** with a slow-refill quota (order of tens of
+writes per minute). The client handles this for you: 429 (and transient 5xx)
+responses are **retried automatically** with exponential backoff + jitter
+(`maxRetries`, default 8). Ingest is also **atomic per file** — if a chunk write
+ultimately fails, the chunks already written for that file are rolled back, so no
+orphaned documents are left behind (`IngestFileError.rolledBack` lists them).
+
+For a few files this is invisible. For **large repos**, one key's quota becomes
+the bottleneck — the server's own 429 message says "split work across keys". So:
+
+- Keep `concurrency` low (2–3) — higher just causes retry storms against the
+  same per-key quota without improving throughput.
+- For a whole codebase, **split the file list across multiple API keys** (pass
+  `client: { token }` per batch), or accept that a single-key run paces itself
+  via retry backoff and takes proportionally longer.
+
 ### Options reference
 
 | Option | Type | Default | Description |
@@ -124,7 +142,7 @@ A single-package Bun workspace. The package `packages/code-chunk` exports
 ```bash
 bun install
 bun run build   # bundle to packages/code-chunk/dist/
-bun test        # 313 unit tests
+bun test        # 329 unit tests
 bun lint        # Biome (lint + format check); bun run lint:fix to auto-fix
 ```
 

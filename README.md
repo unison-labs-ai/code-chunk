@@ -153,6 +153,20 @@ const results = await ingestBatch(
 )
 ```
 
+### Rate Limits & Reliability
+
+The Unison brain rate-limits **per API key** with a slow-refill quota. The
+`BrainClient` handles this automatically:
+
+- **Retries** on `429` and transient `5xx` with exponential backoff + jitter
+  (configurable via `maxRetries`, default 8; honours a `Retry-After` header).
+- **Atomic per-file ingest** — if a chunk write ultimately fails, chunks already
+  written for that file are rolled back, leaving no orphaned documents.
+  `IngestFileError.rolledBack` lists the paths that were cleaned up.
+
+For large codebases, keep `concurrency` low (2–3) and **split work across
+multiple keys** — one key's quota is the throughput ceiling.
+
 ### Stream Ingest Results
 
 ```typescript
