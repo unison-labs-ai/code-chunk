@@ -115,6 +115,12 @@ export interface IngestFileError {
 	chunks: null
 	/** null on error */
 	paths: null
+	/**
+	 * Brain document paths that were written before the failure and then rolled
+	 * back (best-effort deleted). Present for observability; on success the file
+	 * is atomic — either all chunks land or none remain.
+	 */
+	rolledBack?: string[]
 	/** The error that occurred */
 	error: Error
 }
@@ -161,35 +167,57 @@ export async function pushChunks(
 	const totalChunks = chunks.length
 	const paths: string[] = []
 
-	for (const chunk of chunks) {
-		const brainPath = chunkBrainPath(
-			filepath,
-			chunk.index,
-			opts.repo,
-			opts.pathPrefix,
-		)
-		const bodyMd = formatChunkDocument(chunk, filepath, totalChunks)
-		const scope =
-			chunk.context.scope.length > 0
-				? chunk.context.scope
-						.map((s) => s.name)
-						.reverse()
-						.join(' > ')
-				: undefined
-		const title = chunkDocumentTitle(filepath, chunk.index, totalChunks, scope)
-		const tldr = chunkDocumentTldr(chunk, filepath)
+	try {
+		for (const chunk of chunks) {
+			const brainPath = chunkBrainPath(
+				filepath,
+				chunk.index,
+				opts.repo,
+				opts.pathPrefix,
+			)
+			const bodyMd = formatChunkDocument(chunk, filepath, totalChunks)
+			const scope =
+				chunk.context.scope.length > 0
+					? chunk.context.scope
+							.map((s) => s.name)
+							.reverse()
+							.join(' > ')
+					: undefined
+			const title = chunkDocumentTitle(
+				filepath,
+				chunk.index,
+				totalChunks,
+				scope,
+			)
+			const tldr = chunkDocumentTldr(chunk, filepath)
 
-		await client.writeDoc({
-			path: brainPath,
-			bodyMd,
-			kind: 'raw',
-			title,
-			tldr,
-			tags,
-			visibility,
-		})
+			await client.writeDoc({
+				path: brainPath,
+				bodyMd,
+				kind: 'raw',
+				title,
+				tldr,
+				tags,
+				visibility,
+			})
 
-		paths.push(brainPath)
+			paths.push(brainPath)
+		}
+	} catch (err) {
+		// Roll back: a file is atomic — if any chunk write fails, best-effort
+		// delete the chunks already written so no orphaned docs are left behind.
+		const rolledBack: string[] = []
+		for (const path of paths) {
+			try {
+				await client.deleteDoc(path)
+				rolledBack.push(path)
+			} catch {
+				// Ignore rollback errors (e.g. delete not permitted on this deployment).
+			}
+		}
+		const error = err instanceof Error ? err : new Error(String(err))
+		Object.assign(error, { rolledBack })
+		throw error
 	}
 
 	return { filepath, chunks: totalChunks, paths, error: null }
@@ -254,6 +282,7 @@ export async function ingestBatch(
 					filepath: file.filepath,
 					chunks: null,
 					paths: null,
+					rolledBack: (error as { rolledBack?: string[] }).rolledBack,
 					error,
 				})
 				completed++
@@ -289,6 +318,7 @@ export async function* ingestBatchStream(
 					filepath: file.filepath,
 					chunks: null,
 					paths: null,
+					rolledBack: (error as { rolledBack?: string[] }).rolledBack,
 					error,
 				} satisfies IngestFileError
 			}
