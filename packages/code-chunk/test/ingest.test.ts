@@ -46,10 +46,10 @@ describe('isWritableRoot', () => {
 		expect(isWritableRoot('/private/notes/foo.md')).toBe(true)
 	})
 	test('accepts /workspace/', () => {
-		expect(isWritableRoot('/workspace/code/foo.md')).toBe(true)
+		expect(isWritableRoot('/workspace/docs/foo.md')).toBe(true)
 	})
-	test('accepts /teams/eng/', () => {
-		expect(isWritableRoot('/teams/eng/docs/foo.md')).toBe(true)
+	test('accepts /workspace/teams/<slug>/', () => {
+		expect(isWritableRoot('/workspace/teams/eng/docs/foo.md')).toBe(true)
 	})
 	test('rejects /actions/', () => {
 		expect(isWritableRoot('/actions/foo.md')).toBe(false)
