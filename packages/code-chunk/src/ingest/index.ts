@@ -67,8 +67,9 @@ export interface IngestOptions extends ChunkOptions {
 
 	/**
 	 * Writable brain root prefix (default: /private/notes/).
-	 * Must be under /private/, /workspace/, or /teams/<slug>/. Note that the
-	 * brain FS contract requires exactly one slug segment after the kind
+	 * Must be under /private/ or /workspace/. Team docs must be placed under
+	 * /workspace/teams/<slug>/ — a bare /teams/ root is rejected by the brain.
+	 * The brain FS contract requires exactly one slug segment after the kind
 	 * directory; chunkBrainPath produces a flat slug with no subfolders.
 	 */
 	pathPrefix?: string

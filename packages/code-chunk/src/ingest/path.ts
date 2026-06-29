@@ -8,12 +8,13 @@
  * /private/notes/<slug>.md. Path separators in the file path are collapsed
  * to dashes so the result is a single flat slug with no subfolders.
  *
- * Custom root prefixes must be under /private/notes/, /workspace/<kind>/,
- * or /teams/<slug>/<kind>/. Nested subfolders beyond the kind segment are
- * not accepted by the brain; use the flat slug approach below.
+ * Custom root prefixes must be under /private/notes/ or /workspace/<kind>/.
+ * Team docs live under /workspace/teams/<slug>/ — a bare /teams/ root is
+ * rejected by the brain's root-guard. Nested subfolders beyond the kind
+ * segment are not accepted by the brain; use the flat slug approach below.
  */
 
-const WRITABLE_ROOTS = ['/private/', '/workspace/', '/teams/']
+const WRITABLE_ROOTS = ['/private/', '/workspace/']
 
 /**
  * Slugify a string for use in a brain path segment.
@@ -63,7 +64,7 @@ export function chunkBrainPath(
 
 	if (!isWritableRoot(root)) {
 		throw new Error(
-			`Brain path prefix "${root}" is not under a writable root (/private/, /workspace/, /teams/<slug>/).`,
+			`Brain path prefix "${root}" is not under a writable root (/private/, /workspace/). Team docs must be under /workspace/teams/<slug>/.`,
 		)
 	}
 
